@@ -86,26 +86,14 @@ public:
 
         MemMap.insert(pair<MemInfo, clock_t>(meminfotmp, t));
         cout << "new MEMSIZE:" << MemMap.size() << endl;
-//        } else {
-//
-//        }
-
-
     }
 
     void DELETE_RECORD(void *pMemBase, bool isA) {
         for (auto itr = MemMap.begin(); itr != MemMap.end(); itr++) {
-//            cout << "pMemBase:"<< pMemBase<< endl;
-//            cout << "itr:"<<itr->first.pMemAddress << endl;
             if (itr->first.pMemAddress == pMemBase) {
                 MemTotalCur -= itr->first.bMemsize;
                 MembBlockCountCur --;
-                delete pMemBase;
                 MemMap.erase(itr);
-//                delete &itr;
-//                cout << pMemBase << endl;
-
-//                cout << pMemBase << endl;
                 pMemBase = nullptr;
                 break;
             }
@@ -123,10 +111,10 @@ public:
                  << "FUNCTION:" << itr->first.funName << ","
                  << "[" << itr->first.Line << "]" << endl;
         }
-        cout << "Current:" << MembBlockCountCur << endl;
-        cout << "Maxinum:" << MembBlockCountMax << endl;
-        cout << "Current:" << MemTotalCur << endl;
-        cout << "Maxinum:" << MemTotalMax << endl;
+        cout << "MembBlockCountCurrent:" << MembBlockCountCur << endl;
+        cout << "MembBlockCountMaxinum:" << MembBlockCountMax << endl;
+        cout << "MemTotalCurrent:" << MemTotalCur << endl;
+        cout << "MemTotalMaxinum:" << MemTotalMax << endl;
     }
 
 private:
@@ -140,23 +128,32 @@ private:
     map<MemInfo, clock_t> MemMap;
 //    vector<MemInfo> MemVec;
 };
-//long long MemoryTrace::MemTotalCur = 0;
-//long long MemoryTrace::MemTotalMax = 0;
-//int MemoryTrace::MembBlockCountCur = 0;
-//int MemoryTrace::MembBlockCountMax = 0;
-//map<MemInfo, clock_t> MemoryTrace::MemMap;
 static MemoryTrace MEM;
 #define ALGO_NEW(T,pVoid) {\
     pVoid =new T;\
-    cout<<"new:"<<pVoid<<endl;\
     MEM.NEW_RECORD(pVoid,typeid(T).name(),typeid(T).hash_code(),string(__FILE__),\
                         false, sizeof(T),string(__FUNCTION__),int(__LINE__));\
 }
 
-#define ALGO_DELETE(pVoid) {\
-cout<<"delete:"<<pVoid<<endl;\
-MEM.DELETE_RECORD(pVoid,false);\
+//#define ALGO_NEW(T,pVoid,size) {\
+//    pVoid =new[] T;\
+//    MEM.NEW_RECORD(pVoid,typeid(T).name(),typeid(T).hash_code(),string(__FILE__),\
+//                        true, size*sizeof(T),string(__FUNCTION__),int(__LINE__));\
+//}
+
+
+#define ALGO_DELETE(pVoid,flag) {\
+    if(flag){\
+        MEM.DELETE_RECORD(pVoid,true);\
+        delete [] pVoid;\
+    } else {\
+        MEM.DELETE_RECORD(pVoid,false);\
+        delete pVoid;\
+    }\
+    pVoid = nullptr;\
 }
+
+
 #endif //NEW_DELETE_MEMORYTRACE_HPP
 
 
