@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 3.10)
+project(AndroidNDK)
+
+set(CMAKE_CXX_STANDARD 11)
+set(NDK_HOME "E:\\Software\\Jetbrain\\Android\\Sdk\\ndk\\21.3.6528147")
+message(STATUS ${NDK_HOME})
+message(STATUS ${CMAKE_ANDROID_ARCH_ABI})
+include_directories(${NDK_HOME}\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\include)
+include_directories(${NDK_HOME}\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\include\\x86_64-linux-android)
+link_directories(${NDK_HOME}\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\lib)
+add_executable(AndroidNDK main.cpp)
