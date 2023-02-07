@@ -16,7 +16,7 @@
 
 #include <string.h>
 
-#define __FILENAME__ (strrchr(__FILE__, '/') + 1)
+
 class LOG{
 private:
     int loglevel = 0x0;
@@ -29,6 +29,7 @@ public:
 static LOG MYLOG;
 #ifdef ANDROID
 #include <android/log.h>
+#define __FILENAME__ (strrchr(__FILE__, '/') + 1)
 #define ALGO_VERBOSE(format, ...) {\
     if (MYLOG.getLoglevel() >= LOG_LEVELV){\
         __android_log_print(ANDROID_LOG_VERBOSE, TAG,\
@@ -64,7 +65,8 @@ static LOG MYLOG;
     }\
     }
 
-#else
+#elif defined(_WIN32)
+    #define __FILENAME__ (strrchr(__FILE__, '\\') + 1)
     #define ALGO_VERBOSE(format, ...) printf("[%s][VERBOSE][%s][%s][%d]"format,TAG,\
                     __FILENAME__,__FUNCTION__,__LINE__, ##__VA_ARGS__);
     #define ALGO_DEBUG(format, ...) printf("[%s][DEBUG][%s][%s][%d]"format,TAG,\
